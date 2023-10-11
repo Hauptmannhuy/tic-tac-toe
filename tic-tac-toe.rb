@@ -1,4 +1,5 @@
 class Game
+  @@move_status = false
   @@numbers = {1 =>1, 2 => 2, 3 =>3, 4 =>4, 5 =>5, 6 =>6, 7 =>7, 8 =>8, 9 =>9}
   def self.numbers
     @@numbers
@@ -11,6 +12,9 @@ class Game
   #{Game.numbers[7]} | #{Game.numbers[8]} | #{Game.numbers[9]}
  ---+---+--- 
   " 
+end
+def self.move_status
+  @@move_status
 end
   def player_move
     puts "Make your move!"
