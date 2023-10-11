@@ -1,13 +1,20 @@
 class Game
+  @@taken_numbers = []
   @@move_status = false
   @@numbers = {1 =>1, 2 => 2, 3 =>3, 4 =>4, 5 =>5, 6 =>6, 7 =>7, 8 =>8, 9 =>9}
   
+  def self.is_taken?(input)
+    @@taken_numbers.include?(input)
+  end
+
   def self.move_status
     @@move_status
   end
+
   def self.move_switch
     @@move_status = Game.move_status == false ? true : false
   end
+
   def self.numbers
     @@numbers
   end
@@ -26,6 +33,11 @@ end
 def self.player_move
     puts "Make your move, #{@@move_status == false ? Player.players[0].name : Player.players[1].name}!"
      input = gets.chomp.to_i
+     while Game.is_taken?(input) 
+      "This number is already taken!"
+      input = gets.chomp.to_i
+     end
+     @@taken_numbers << input
     self.change_board(input)
 end
 
@@ -34,6 +46,7 @@ def self.change_board(input)
   Game.move_switch
   puts Game.show_board
 end
+
   def self.check_win
     if (Game.numbers[1] == Game.numbers[2] && Game.numbers[2] == Game.numbers[3]) ||
         (Game.numbers[4] == Game.numbers[5] && Game.numbers[5] == Game.numbers[6]) ||
@@ -59,8 +72,8 @@ class Player
     @@players << self
     @@player_count+=1
   end
-  def Player.choose_name_marker
 
+  def Player.choose_name_marker
     puts "What is the name of player #{@@player_count}?"
     input_name = gets.chomp
     if @@players.any? && input_name == Player.players[0].name
@@ -87,14 +100,17 @@ end
 def self.players
     return @@players
   end
+  def self.create_players
+    p1 = Player.choose_name_marker
+    p2 = Player.choose_name_marker
+  end
 end
 
-p1 = Player.choose_name_marker
-p2 = Player.choose_name_marker
+Player.create_players
 puts Game.show_board
-
 while Game.check_win != true do
   Game.player_move
 end
   puts "Player #{@@move_status == false ? Player.players[1].name: Player.players[0].name} wins! Game over."
+
 end
