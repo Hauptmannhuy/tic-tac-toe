@@ -24,7 +24,7 @@ class Game
 end
   
 def self.player_move
-    puts "Make your move!"
+    puts "Make your move, #{@@move_status == false ? Player.players[0].name : Player.players[1].name}!"
      input = gets.chomp.to_i
     self.change_board(input)
 end
@@ -34,6 +34,19 @@ def self.change_board(input)
   Game.move_switch
   puts Game.show_board
 end
+  def self.check_win
+    if (Game.numbers[1] == Game.numbers[2] && Game.numbers[2] == Game.numbers[3]) ||
+        (Game.numbers[4] == Game.numbers[5] && Game.numbers[5] == Game.numbers[6]) ||
+        (Game.numbers[7] == Game.numbers[8] && Game.numbers[8] == Game.numbers[9]) ||
+        (Game.numbers[1] == Game.numbers[4] && Game.numbers[4] == Game.numbers[7]) ||
+        (Game.numbers[2] == Game.numbers[5] && Game.numbers[5] == Game.numbers[8]) ||
+        (Game.numbers[3] == Game.numbers[6] && Game.numbers[6] == Game.numbers[9]) ||
+        (Game.numbers[1] == Game.numbers[5] && Game.numbers[5] == Game.numbers[9]) ||
+        (Game.numbers[3] == Game.numbers[5] && Game.numbers[5] == Game.numbers[7])
+      return true
+    else
+      return false
+    end
 end
 
 class Player
@@ -67,6 +80,7 @@ class Player
     end
     input_marker = gets.chomp
   end
+    
     Player.new(input_name,input_marker)
 end
 
@@ -75,9 +89,12 @@ def self.players
   end
 end
 
-puts p1 = Player.choose_name_marker
-puts p2 = Player.choose_name_marker
+p1 = Player.choose_name_marker
+p2 = Player.choose_name_marker
 puts Game.show_board
-Game.player_move()
 
-
+while Game.check_win != true do
+  Game.player_move
+end
+  puts "Player #{@@move_status == false ? Player.players[1].name: Player.players[0].name} wins! Game over."
+end
