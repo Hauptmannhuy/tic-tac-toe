@@ -1,10 +1,19 @@
 class Game
   @@move_status = false
   @@numbers = {1 =>1, 2 => 2, 3 =>3, 4 =>4, 5 =>5, 6 =>6, 7 =>7, 8 =>8, 9 =>9}
+  
+  def self.move_status
+    @@move_status
+  end
+  def self.move_switch
+    @@move_status = Game.move_status == false ? true : false
+  end
   def self.numbers
     @@numbers
   end
-  def self.show_board ="
+  
+  def self.show_board 
+    "
   #{Game.numbers[1]} | #{Game.numbers[2]} | #{Game.numbers[3]}
  ---+---+---
   #{Game.numbers[4]} | #{Game.numbers[5]} | #{Game.numbers[6]}
@@ -13,17 +22,18 @@ class Game
  ---+---+--- 
   " 
 end
-def self.move_status
-  @@move_status
-end
-  def player_move
+  
+def self.player_move
     puts "Make your move!"
      input = gets.chomp.to_i
-    change_board(input)
+    self.change_board(input)
 end
-def change_board(input)
-  Game.numbers[input] = 'X'
+
+def self.change_board(input)
+  Game.numbers[input] = Game.move_status == false ? Player.players[0].marker : Player.players[1].marker
+  Game.move_switch
   puts Game.show_board
+end
 end
 
 class Player
@@ -67,7 +77,7 @@ end
 
 puts p1 = Player.choose_name_marker
 puts p2 = Player.choose_name_marker
-p Player.players
-
 puts Game.show_board
-player_move
+Game.player_move()
+
+
