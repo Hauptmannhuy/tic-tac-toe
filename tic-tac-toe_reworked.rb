@@ -1,9 +1,10 @@
 class Game
   attr_accessor :players, :p1,:p2
 def initialize
+ @taken_numbers = []
  @players = []
  @numbers = {1=>1, 2=>2, 3=>3, 4=>4, 5=>5, 6=>6, 7=>7, 8=>8, 9=>9}
- 
+ @move_status = false
 end
 
 def self.start
@@ -11,8 +12,6 @@ def self.start
   new_game = Game.new
   gets
   new_game.init_players
-
-
 end
 
 def init_players
@@ -22,9 +21,18 @@ def init_players
   @p2 = choose_name
   @p2_marker = choose_marker
   @players << @p2
-  @move_status = false
-  player_move
+  play
 end
+
+def play 
+  loop do
+    display_board
+    break if is_draw? || check_win
+    player_move
+    switch_player
+  end
+end
+
 
 def choose_name
   puts "What is the name of player #{@players.any? ? '2' : '1'}?"
@@ -52,27 +60,32 @@ end
 end
 
 def player_move
-  taken_numbers = []
-  unless check_win do
-    display_board
     puts "Player:#{@move_status == false ? @p1 : @p2} should make his move"
     input = gets.chomp.to_i
-    while taken_numbers.include?(input)
+    while @taken_numbers.include?(input)
       puts 'This number has already taken!'
       input = gets.chomp.to_i
     end
-    taken_numbers << input
+    @taken_numbers << input
     change_board(input)
-  end
 end
 
 def change_board(input)
     @numbers[input] = @move_status == false ? @p1_marker : @p2_marker
-    @move_status = @move_status == false ? true : false
+end
+
+def switch_player
+  @move_status = @move_status == false ? true : false
 end
 
 def check_win
   
+end
+
+def is_draw?
+  if @numbers.all? {|key,value| value.kind_of? String} && !check_win
+    puts "It's a draw!"
+  end
 end
 
 def display_board
