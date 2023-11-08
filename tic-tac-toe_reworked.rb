@@ -5,32 +5,29 @@ def initialize
  @players = []
  @numbers = {1=>1, 2=>2, 3=>3, 4=>4, 5=>5, 6=>6, 7=>7, 8=>8, 9=>9}
  @move_status = false
+ @p1 = choose_name
+ @p1_marker = choose_marker
+ @players << @p1
+ @p2 = choose_name
+ @p2_marker = choose_marker
+ @players << @p2
 end
 
 def self.start
   puts "Welcome to the tic-tac-toe!\nPress any button if you wish start a new game!"
   new_game = Game.new
-  gets
-  new_game.init_players
-end
-
-def init_players
-  @p1 = choose_name
-  @p1_marker = choose_marker
-  @players << @p1
-  @p2 = choose_name
-  @p2_marker = choose_marker
-  @players << @p2
-  play
+  new_game.play
 end
 
 def play 
   loop do
     display_board
-    break if is_draw? || check_win
     player_move
+    break if is_draw? || check_win
     switch_player
-  end
+end
+  display_board
+  game_restart
 end
 
 
@@ -62,8 +59,12 @@ end
 def player_move
     puts "Player:#{@move_status == false ? @p1 : @p2} should make his move"
     input = gets.chomp.to_i
-    while @taken_numbers.include?(input)
+    while @taken_numbers.include?(input) || !(1..9).include?(input)
+      if @taken_numbers.include?(input)
       puts 'This number has already taken!'
+      else 
+      puts 'Input should only be 1-9 digit!'
+      end
       input = gets.chomp.to_i
     end
     @taken_numbers << input
@@ -79,12 +80,38 @@ def switch_player
 end
 
 def check_win
-  
+  win_comb =
+  [1,2,3], # top_row 
+  [4,5,6], # middle_row 
+  [7,8,9], # bottom_row 
+  [1,4,7], # left_column 
+  [2,5,8], # center_column 
+  [3,6,9], # right_column 
+  [1,5,9], # left_diagonal 
+  [3,5,7] # right_diagonal 
+  win_comb.each do |combination|
+    position_1 = combination[0]
+    position_2 = combination[1]
+    position_3 = combination[2]
+    marker = @move_status == false ? @p1_marker : @p2_marker
+    if @numbers[position_1] == marker && @numbers[position_2] == marker && @numbers[position_3] == marker
+      puts "Player #{@move_status == false ? @p1 : @p2} wins!"
+      return true
+  end
+end
+   false
+end                     
+
+def game_restart
+  puts "Would you like to start a new game? Type 'Y' if so"
+  input = gets.chomp.downcase
+  input == 'y' ? Game.start : 'Thanks for playing!'
 end
 
 def is_draw?
   if @numbers.all? {|key,value| value.kind_of? String} && !check_win
     puts "It's a draw!"
+    return true
   end
 end
 
