@@ -6,18 +6,23 @@ class Game
     @players = []
     @numbers = { 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9 }
     @move_status = false
+    
+  end
+
+  def self.start
+    puts "Welcome to the tic-tac-toe!\nPress any button if you wish start a new game!"
+    new_game = Game.new
+    new_game.set_players
+    new_game.play
+  end
+
+  def set_players
     @p1 = choose_name
     @p1_marker = choose_marker
     @players << @p1
     @p2 = choose_name
     @p2_marker = choose_marker
     @players << @p2
-  end
-
-  def self.start
-    puts "Welcome to the tic-tac-toe!\nPress any button if you wish start a new game!"
-    new_game = Game.new
-    new_game.play
   end
 
   def display_board
