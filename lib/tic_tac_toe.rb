@@ -47,14 +47,20 @@ class Game
 
   def choose_name
     puts "What is the name of player #{@players.any? ? '2' : '1'}?"
-    input_name = gets.chomp
-    if @players.any? && input_name == @players[0]
-      while input_name == @players[0]
-        puts "Your name shouldn't be #{@players[0]}"
+      loop do
         input_name = gets.chomp
+        verified_name = name_exist?(input_name)
+        return verified_name if verified_name
+        puts "Your name shouldn't be #{@players[0]}"
       end
+  end
+
+  def name_exist?(name)
+    if @players.any?
+      return name if name != @players[0]
+    else
+      name
     end
-    input_name
   end
 
   def choose_marker
@@ -131,4 +137,3 @@ class Game
   end
 end
 
-Game.start
