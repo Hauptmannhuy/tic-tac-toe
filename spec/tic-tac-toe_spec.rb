@@ -95,12 +95,36 @@ describe Game do
          expect(game_move).to receive(:puts).with("Player:#{game_move.instance_variable_get(:@p1)} should make his move").once
          game_move.player_move
       end
-      context "When user input is invalid" do
-        before do
-          
-        end
+    end
+
+    context "When user inputs an incorrect value once, then a valid input" do
+
+      before do
+        allow(game_move).to receive(:puts)
+        game_move.instance_variable_get(:@taken_numbers) << 1
+        allow(game_move).to receive(:gets).and_return("1\n","2\n")
+      end
+      it 'throws an error message' do
+        error_message = "This number has already taken!"
+        expect(game_move).to receive(:puts).with(error_message).once
+        game_move.player_move
       end
     end
+    context "When user inputs correct value" do
+
+      before do
+        allow(game_move).to receive(:puts)
+        allow(game_move).to receive(:gets).and_return("1\n")
+      end
+      it 'changes "@taken numbers" variable by 1' do
+      expect{ game_move.player_move }.to change{game_move.instance_variable_get(:@taken_numbers).length}.by(1)
+      end
+      it 'sends message to "change board" method' do
+        expect(game_move).to receive(:change_board)
+        game_move.player_move
+      end
+    end
+
   end
 
 end
