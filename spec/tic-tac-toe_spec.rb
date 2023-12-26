@@ -44,7 +44,63 @@ describe Game do
   end
 
   describe "#choose_marker" do
+    subject(:game_marker){ described_class.new() }
     
+    context "When input is valid" do
+      before do
+        allow(game_marker).to receive(:gets).and_return('X')
+      end
+      it 'returns input' do
+        expect(game_marker.choose_marker).to eq('X')
+        game_marker.choose_marker
+      end
+    end
+    
+    context "When user inputs an incorrect value once and then valid value" do
+      before do
+        allow(game_marker).to receive(:puts)
+        allow(game_marker).to receive(:gets).and_return('Xx','X')
+      end
+      it 'completes loop and displays error message once' do
+        error_message = "Input error! Input should be exactly 1 character and shouldn't repeat first player's marker."
+        expect(game_marker).to receive(:puts).with(error_message).once
+        game_marker.choose_marker
+      end
+    end
+    context "When user trying to input marker that already exists and valid value" do
+      before do
+        allow(game_marker).to receive(:puts)
+        game_marker.instance_variable_set(:@p1_marker,'X') 
+        allow(game_marker).to receive(:gets).and_return('X','Y')
+      end
+      it "completes loop and displays error message once" do
+        error_message = "Input error! Input should be exactly 1 character and shouldn't repeat first player's marker."
+        expect(game_marker).to receive(:puts).with(error_message).once
+        game_marker.choose_marker
+      end
+    end
+  end
+
+  describe "#player_move" do
+    subject(:game_move){ described_class.new() }
+
+    context 'When move status is false' do
+      before do
+        game_move.instance_variable_set(:@p1, 'Danya')
+        game_move.instance_variable_set(:@p2, 'Dasha')
+       game_move.instance_variable_set(:@move_status, false)
+      end
+      it "informs that it is the first player turn" do
+        allow(game_move).to receive(:gets).and_return("1\n")
+         expect(game_move).to receive(:puts).with("Player:#{game_move.instance_variable_get(:@p1)} should make his move").once
+         game_move.player_move
+      end
+      context "When user input is invalid" do
+        before do
+          
+        end
+      end
+    end
   end
 
 end

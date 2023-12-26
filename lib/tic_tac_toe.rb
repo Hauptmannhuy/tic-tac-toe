@@ -1,7 +1,8 @@
 class Game
   attr_accessor :players, :p1, :p2
 
-  def initialize
+  def initialize()
+
     @taken_numbers = []
     @players = []
     @numbers = { 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9 }
@@ -65,20 +66,21 @@ class Game
 
   def choose_marker
     puts 'What game marker would you like to use? (Select 1 letter or special character)'
-    input_marker = gets.chomp
-    while input_marker.length != 1 || input_marker == @p1_marker
-      if input_marker.length != 1
-        puts 'Your mark should be exactly one character'
-      else
-        puts "Your marker shouldn't be #{input_marker}. Please choose another marker."
-      end
+    loop do
       input_marker = gets.chomp
-    end
-    input_marker
+      verified_marker = check_marker(input_marker)
+      return verified_marker if verified_marker
+      puts "Input error! Input should be exactly 1 character and shouldn't repeat first player's marker."
+        end
+  end
+
+  def check_marker(marker)
+    return marker if marker.length == 1 && marker != @p1_marker
   end
 
   def player_move
-    puts "Player:#{@move_status == false ? @p1 : @p2} should make his move"
+    current_player = @move_status == false ? @p1 : @p2
+    puts "Player:#{current_player} should make his move"
     input = gets.chomp.to_i
     while @taken_numbers.include?(input) || !(1..9).include?(input)
       if @taken_numbers.include?(input)
