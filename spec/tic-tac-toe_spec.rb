@@ -124,7 +124,42 @@ describe Game do
         game_move.player_move
       end
     end
-
   end
+
+    describe "#check_win" do
+      subject(:game_win){ described_class.new() }
+      context "When input matches with win combination" do
+
+        before do
+          game_win.instance_variable_set(:@p1_marker, 'X')
+        end
+
+        it 'returns true if win combination is [1,2,3]' do
+          nums = { 1 => 'X', 2 => 'X', 3 => 'X', 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9 }
+          game_win.instance_variable_set(:@numbers, nums)
+          expect(game_win.check_win).to eq(true)
+        end
+
+        it 'returns true if win combination is [4,5,6]' do
+        nums = { 1 => 'X', 2 => 'X', 3 => 'Y', 4 => 'X', 5 => 'X', 6 => 'X', 7 => 7, 8 => 8, 9 => 9 }
+        game_win.instance_variable_set(:@numbers, nums)
+        expect(game_win.check_win).to eq(true)
+        end
+      end
+
+      context "When input doesn't match" do
+        
+        before do
+          game_win.instance_variable_set(:@p1_marker, 'X')
+         
+        end
+        it 'returns false' do
+          nums = { 1 => 'X', 2 => 'Y', 3 => 'X', 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9 }
+          game_win.instance_variable_set(:@numbers, nums)
+          expect(game_win.check_win).to eq(false)
+        end
+      end
+    end
+
 
 end

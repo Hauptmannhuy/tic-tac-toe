@@ -1,7 +1,7 @@
 class Game
   attr_accessor :players, :p1, :p2
 
-  def initialize()
+  def initialize
 
     @taken_numbers = []
     @players = []
