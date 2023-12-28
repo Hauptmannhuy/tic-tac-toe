@@ -109,6 +109,10 @@ describe Game do
         expect(game_move).to receive(:puts).with(error_message).once
         game_move.player_move
       end
+      it 'sends an message to #change_board method' do
+        expect(game_move).to receive(:change_board)
+        game_move.player_move
+      end
     end
     context "When user inputs correct value" do
 
@@ -161,5 +165,50 @@ describe Game do
       end
     end
 
+    describe "#is_draw?" do
+      subject(:game_draw){ described_class.new() }
+
+      context "When every cell is covered by marker but no win combination" do
+        before do
+          nums = { 1 => 'X', 2 => 'Y', 3 => 'X', 4 => 'Y', 5 => 'X', 6 => 'Y', 7 => 'Y', 8 => 'X', 9 => 'Y' }
+          game_draw.instance_variable_set(:@numbers, nums)
+          allow(game_draw).to receive(:check_win).and_return(false)
+
+        end
+        it 'returns true' do
+        expect(game_draw.is_draw?).to eq(true)
+        end
+      end
+
+      context "When all cells aren't filled with markers" do
+        before do
+          nums = { 1 => 'X', 2 => 'Y', 3 => 'X', 4 => 'Y', 5 => 'X', 6 => 'Y', 7 => 'Y', 8 => 'X', 9 => 9 }
+          game_draw.instance_variable_set(:@numbers, nums)
+          allow(game_draw).to receive(:check_win).and_return(false)
+        end
+        it 'returns nil' do
+          expect(game_draw.is_draw?).to eq(nil)
+        end
+      end
+    end
+    
+    describe "#change_board" do
+      subject(:game_board){ described_class.new() }
+      context "When it's first player and '1' is given input" do
+        before do
+         
+          game_board.instance_variable_set(:@p1_marker, 'X')
+        end
+        it "changes first square to 'X'" do
+          num = game_board.instance_variable_get(:@numbers)
+          expect { game_board.change_board(1) }.to change {num[1]}.from(1).to('X')
+          
+        end
+        it "changes ninth square to 'X'" do
+          num = game_board.instance_variable_get(:@numbers)
+          expect { game_board.change_board(9) }.to change {num[9]}.from(9).to('X')
+        end
+      end
+    end
 
 end
